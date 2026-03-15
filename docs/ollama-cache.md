@@ -1,7 +1,7 @@
 # Ollama Model Cache
 
 ## Goal
-Use beta-1 as the **shared model storage** for Ollama, so all Tailnet machines reuse the same model files.
+Use your shared cache server as the **shared model storage** for Ollama, so all machines on the VPN/LAN reuse the same model files.
 
 ## Model storage path
 Ollama uses the `OLLAMA_MODELS` env var to control where models are stored.
@@ -19,10 +19,10 @@ Now `ollama pull llama3` will store the model in the shared cache.
 
 ---
 
-## Option: Run Ollama server on beta-1
+## Option: Run Ollama server on the cache server
 You can host a central Ollama server so clients just send requests.
 
-### On beta-1
+### On the cache server
 ```bash
 # Example service install (manual)
 ollama serve
@@ -30,10 +30,23 @@ ollama serve
 
 Then on clients:
 ```bash
-export OLLAMA_HOST=http://100.124.211.75:11434
+export OLLAMA_HOST=http://CACHE_SERVER:11434
 ```
 
 This avoids local GPU usage on clients and consolidates model usage.
+
+---
+
+## Other shared model caches
+Hugging Face can use the same mounted approach:
+
+```bash
+export HF_HOME=/mnt/cache/huggingface      # Linux
+# or
+export HF_HOME=/Volumes/cache-huggingface  # macOS
+```
+
+This keeps downloaded models and datasets shared across machines.
 
 ---
 

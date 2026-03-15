@@ -1,0 +1,7 @@
+CACHE_SERVER=cache-server.local
+CACHE_EXPORT_BASE=/srv/cache
+CACHE_NAMES="docker ollama npm huggingface"
+
+# Optional per-cache overrides:
+# CACHE_EXPORT_HUGGINGFACE=/srv/cache/hf
+# CACHE_MOUNT_HUGGINGFACE=/mnt/cache/huggingface

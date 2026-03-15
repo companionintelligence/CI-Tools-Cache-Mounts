@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PLIST_DIR="$HOME/Library/LaunchAgents"
-PLIST_NAME="com.liam.cache-mounts.plist"
+PLIST_NAME="com.companionintelligence.cache-mounts.plist"
 PLIST_PATH="$PLIST_DIR/$PLIST_NAME"
 
 mkdir -p "$PLIST_DIR"
