@@ -12,6 +12,10 @@ if command -v apt-get >/dev/null 2>&1; then
   sudo apt-get install -y nfs-common
 fi
 
+if [[ -f /etc/fstab ]]; then
+  sudo cp /etc/fstab "/etc/fstab.cache-mounts.bak.$(date +%Y%m%d%H%M%S)"
+fi
+
 while IFS= read -r cache_name; do
   mount_path="$(cache_mount_path linux "$cache_name")"
   remote_spec="$(cache_remote_spec "$cache_name")"
@@ -29,9 +33,6 @@ while IFS= read -r cache_name; do
       awk -v mount="$mount_path" '$2 != mount { print }' /etc/fstab | sudo tee "$tmp_fstab" >/dev/null
     fi
     printf '%s\n' "$fstab_line" | sudo tee -a "$tmp_fstab" >/dev/null
-    if [[ -f /etc/fstab ]]; then
-      sudo cp /etc/fstab "/etc/fstab.cache-mounts.bak.$(date +%Y%m%d%H%M%S)"
-    fi
     sudo tee /etc/fstab < "$tmp_fstab" >/dev/null
     sudo rm -f "$tmp_fstab"
   fi
