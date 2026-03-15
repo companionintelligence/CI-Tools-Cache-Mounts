@@ -13,17 +13,27 @@ CACHE_SERVER="${CACHE_SERVER:-}"
 CACHE_EXPORT_BASE="${CACHE_EXPORT_BASE:-/srv/cache}"
 CACHE_NAMES="${CACHE_NAMES:-docker ollama npm huggingface}"
 
+# Converts cache names like "my-cache" or "models/hf" into override suffixes
+# such as "MY_CACHE" and "MODELS_HF" for CACHE_EXPORT_* and CACHE_MOUNT_*.
 cache_var_suffix() {
   echo "$1" | tr '[:lower:]/-' '[:upper:]__'
 }
 
 cache_list_names() {
-  printf '%s\n' "$CACHE_NAMES" | tr ', ' '\n\n' | sed '/^$/d'
+  local names="${CACHE_NAMES//,/ }"
+  local -a cache_names=()
+  local name
+
+  read -r -a cache_names <<<"$names"
+
+  for name in "${cache_names[@]}"; do
+    printf '%s\n' "$name"
+  done
 }
 
 cache_require_server() {
   if [[ -z "$CACHE_SERVER" ]]; then
-    echo "CACHE_SERVER is not set. Export it or create $CACHE_MOUNTS_CONFIG." >&2
+    echo "CACHE_SERVER is not set. Export it or create $CACHE_MOUNTS_CONFIG (for example: cp $CACHE_MOUNTS_REPO_DIR/cache-mounts.conf.example $CACHE_MOUNTS_CONFIG)." >&2
     exit 1
   fi
 }

@@ -1,5 +1,8 @@
+# Replace with your actual hostname, IP address, or FQDN reachable on your VPN/LAN.
+# Example placeholder only: ".local" hostnames typically rely on mDNS/Bonjour.
 CACHE_SERVER=cache-server.local
 CACHE_EXPORT_BASE=/srv/cache
+# Separate cache names with spaces or commas.
 CACHE_NAMES="docker ollama npm huggingface"
 
 # Optional per-cache overrides:

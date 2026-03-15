@@ -11,7 +11,7 @@ cp ./cache-mounts.conf.example ./cache-mounts.conf
 
 Set at least:
 - `CACHE_SERVER`: hostname or IP reachable on your VPN/LAN
-- `CACHE_NAMES`: caches to mount (defaults to `docker ollama npm huggingface`)
+- `CACHE_NAMES`: caches to mount, separated by spaces or commas (defaults to `docker ollama npm huggingface`)
 - `CACHE_EXPORT_BASE`: export root on the server (defaults to `/srv/cache`)
 
 You can also override individual exports or mount points with variables such as:

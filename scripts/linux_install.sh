@@ -19,8 +19,21 @@ while IFS= read -r cache_name; do
 
   sudo mkdir -p "$mount_path"
 
-  if ! grep -Fq "$fstab_line" /etc/fstab; then
-    echo "$fstab_line" | sudo tee -a /etc/fstab >/dev/null
+  if ! awk -v remote="$remote_spec" -v mount="$mount_path" '
+    $1 == remote && $2 == mount { found=1; exit }
+    END { exit !found }
+  ' /etc/fstab; then
+    tmp_fstab="$(sudo mktemp /run/cache-mounts-fstab.XXXXXX)"
+    sudo chmod 600 "$tmp_fstab"
+    if [[ -f /etc/fstab ]]; then
+      awk -v mount="$mount_path" '$2 != mount { print }' /etc/fstab | sudo tee "$tmp_fstab" >/dev/null
+    fi
+    printf '%s\n' "$fstab_line" | sudo tee -a "$tmp_fstab" >/dev/null
+    if [[ -f /etc/fstab ]]; then
+      sudo cp /etc/fstab "/etc/fstab.cache-mounts.bak.$(date +%Y%m%d%H%M%S)"
+    fi
+    sudo tee /etc/fstab < "$tmp_fstab" >/dev/null
+    sudo rm -f "$tmp_fstab"
   fi
 done < <(cache_list_names)
 
