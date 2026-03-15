@@ -3,7 +3,7 @@
 ## Two levels of “cache”
 
 ### 1) **Shared volume cache (current setup)**
-We mount `/srv/cache/docker` from beta-1 onto clients. This is best for:
+Mount the shared Docker cache export (for example `/srv/cache/docker`) onto clients. This is best for:
 - Build caches you control (e.g., BuildKit cache directories)
 - Shared artifacts and large files across machines
 
@@ -28,11 +28,11 @@ docker buildx build \
 ---
 
 ### 2) **Registry proxy cache (optional upgrade)**
-If you want **actual Docker image layer caching**, you can run a registry proxy on beta-1. This caches image layers pulled from Docker Hub/GHCR.
+If you want **actual Docker image layer caching**, you can run a registry proxy on your cache server. This caches image layers pulled from Docker Hub/GHCR.
 
 #### Example (docker registry proxy)
 ```yaml
-# docker-compose.yml on beta-1
+# docker-compose.yml on the cache server
 services:
   registry:
     image: registry:2
@@ -48,7 +48,7 @@ Then on clients:
 ```json
 // /etc/docker/daemon.json
 {
-  "registry-mirrors": ["http://100.124.211.75:5000"]
+  "registry-mirrors": ["http://CACHE_SERVER:5000"]
 }
 ```
 

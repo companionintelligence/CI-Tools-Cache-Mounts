@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOCKER_MOUNT="/Volumes/cache-docker"
-OLLAMA_MOUNT="/Volumes/cache-ollama"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$REPO_DIR/scripts/cache_mounts.sh"
 
-if mount | grep -q "${DOCKER_MOUNT}"; then
-  sudo umount "$DOCKER_MOUNT"
-fi
+while IFS= read -r cache_name; do
+  mount_path="$(cache_mount_path macos "$cache_name")"
 
-if mount | grep -q "${OLLAMA_MOUNT}"; then
-  sudo umount "$OLLAMA_MOUNT"
-fi
+  if mount | grep -Fq "${mount_path}"; then
+    sudo umount "$mount_path"
+  fi
+done < <(cache_list_names)
 
 echo "Unmounted NFS caches on macOS."

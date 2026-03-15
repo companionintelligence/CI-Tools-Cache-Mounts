@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SERVER="100.124.211.75"
-DOCKER_REMOTE="${SERVER}:/srv/cache/docker"
-OLLAMA_REMOTE="${SERVER}:/srv/cache/ollama"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$REPO_DIR/scripts/cache_mounts.sh"
 
-DOCKER_MOUNT="/mnt/cache/docker"
-OLLAMA_MOUNT="/mnt/cache/ollama"
+cache_require_server
 
-sudo mkdir -p "$DOCKER_MOUNT" "$OLLAMA_MOUNT"
+while IFS= read -r cache_name; do
+  mount_path="$(cache_mount_path linux "$cache_name")"
+  remote_spec="$(cache_remote_spec "$cache_name")"
 
-if ! mount | grep -q "${DOCKER_MOUNT}"; then
-  sudo mount -t nfs -o hard,intr,tcp,_netdev "$DOCKER_REMOTE" "$DOCKER_MOUNT"
-fi
+  sudo mkdir -p "$mount_path"
 
-if ! mount | grep -q "${OLLAMA_MOUNT}"; then
-  sudo mount -t nfs -o hard,intr,tcp,_netdev "$OLLAMA_REMOTE" "$OLLAMA_MOUNT"
-fi
+  if ! mount | grep -Fq "${mount_path}"; then
+    sudo mount -t nfs -o hard,intr,tcp,_netdev "$remote_spec" "$mount_path"
+  fi
+done < <(cache_list_names)
 
 echo "Mounted NFS caches on Linux."
