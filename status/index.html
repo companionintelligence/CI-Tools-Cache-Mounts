@@ -1,1 +1,167 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Tools Cache Mount</title></head><body style="font-family:system-ui;background:#0b1020;color:#e6f0ff;display:grid;place-items:center;height:100vh;margin:0"><main style="text-align:center"><h1>Tools Cache Mount</h1><p>Cache-mount helper service is running.</p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools Cache Mount</title>
+<style>
+  :root {
+    --bg: #041620;
+    --surface: #08212c;
+    --surface-2: #0a222e;
+    --text: #eefcff;
+    --muted: #88a29e;
+    --border: #14424c;
+    --accent: #19c6c8;
+    --accent-bright: #82fcfc;
+    --success: #20e887;
+    --warning: #ffb020;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Montserrat, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 64px; }
+  header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .chip {
+    width: 44px; height: 44px; border-radius: 10px; flex: none;
+    background: linear-gradient(135deg, #129fa4, #0b6e74);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 18px; color: #eefcff; letter-spacing: .5px;
+  }
+  h1 { font-size: 26px; font-weight: 600; margin: 0; }
+  .badge {
+    margin-left: auto; padding: 4px 12px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface);
+    font-size: 13px; color: var(--success); white-space: nowrap;
+  }
+  .badge::before { content: "●"; margin-right: 6px; }
+  p.lede { color: var(--muted); margin: 14px 0 0; max-width: 64ch; }
+  .callout {
+    margin: 28px 0; padding: 14px 18px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--warning); font-size: 14.5px;
+  }
+  .callout strong { color: var(--warning); }
+  h2 {
+    font-size: 15px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent-bright);
+    margin: 36px 0 12px;
+  }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td { padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; }
+  tr:last-child td { border-bottom: none; }
+  code, pre {
+    font-family: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+  }
+  code { background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; color: var(--accent-bright); }
+  pre {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; overflow-x: auto; color: var(--text); margin: 0;
+  }
+  pre .c { color: var(--muted); }
+  ul.docs { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  ul.docs li {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; font-size: 14px;
+  }
+  ul.docs .t { color: var(--accent-bright); font-weight: 600; }
+  ul.docs .d { color: var(--muted); }
+  a { color: var(--accent); }
+  footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="chip">CI</div>
+    <h1>Tools Cache Mount</h1>
+    <span class="badge">Container running</span>
+  </header>
+
+  <p class="lede">
+    Tools Cache Mount shares one set of heavyweight caches — Docker build caches, Ollama
+    models, npm packages, Hugging&nbsp;Face downloads — across every machine on your
+    Tailscale, VPN, or LAN via NFS, so each model or dependency is downloaded once and
+    reused everywhere.
+  </p>
+
+  <div class="callout">
+    <strong>Heads up:</strong> this container is informational only. NFS mounts must be
+    configured on the <em>host</em> (your Mac, Linux box, or the Hub appliance itself) using
+    the shell scripts in the
+    <a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">CI-Tools-Cache-Mounts</a>
+    repository — a container cannot create host mounts. This page serves as the install
+    confirmation and quick reference.
+  </div>
+
+  <h2>Default cache layout</h2>
+  <table>
+    <thead>
+      <tr><th>Cache</th><th>Server export</th><th>Linux mount</th><th>macOS mount</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>docker</td><td><code>/srv/cache/docker</code></td><td><code>/mnt/cache/docker</code></td><td><code>/Volumes/cache-docker</code></td></tr>
+      <tr><td>ollama</td><td><code>/srv/cache/ollama</code></td><td><code>/mnt/cache/ollama</code></td><td><code>/Volumes/cache-ollama</code></td></tr>
+      <tr><td>npm</td><td><code>/srv/cache/npm</code></td><td><code>/mnt/cache/npm</code></td><td><code>/Volumes/cache-npm</code></td></tr>
+      <tr><td>huggingface</td><td><code>/srv/cache/huggingface</code></td><td><code>/mnt/cache/huggingface</code></td><td><code>/Volumes/cache-huggingface</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Quickstart (run on each client host)</h2>
+  <pre><span class="c"># 1. Get the tooling</span>
+git clone https://github.com/companionintelligence/CI-Tools-Cache-Mounts.git
+cd CI-Tools-Cache-Mounts
+
+<span class="c"># 2. Point it at your cache server</span>
+cp cache-mounts.conf.example cache-mounts.conf
+<span class="c">#    edit cache-mounts.conf: set CACHE_SERVER (and optionally CACHE_NAMES)</span>
+
+<span class="c"># 3. Install auto-mounts</span>
+./scripts/linux_install.sh   <span class="c"># Linux: fstab entries + mounts now</span>
+./scripts/macos_install.sh   <span class="c"># macOS: launchd job + mounts now</span>
+
+<span class="c"># Manual control</span>
+./scripts/linux_mount.sh     ./scripts/linux_unmount.sh
+./scripts/macos_mount.sh     ./scripts/macos_unmount.sh</pre>
+
+  <h2>Configuration (cache-mounts.conf)</h2>
+  <pre>CACHE_SERVER=cache-server.local        <span class="c"># hostname or IP on your VPN/LAN</span>
+CACHE_EXPORT_BASE=/srv/cache           <span class="c"># export root on the server</span>
+CACHE_NAMES="docker ollama npm huggingface"
+
+<span class="c"># Optional per-cache overrides:</span>
+<span class="c"># CACHE_EXPORT_HUGGINGFACE=/srv/cache/hf</span>
+<span class="c"># CACHE_MOUNT_HUGGINGFACE=/mnt/cache/huggingface</span></pre>
+
+  <h2>Point your tools at the shared caches</h2>
+  <pre>export OLLAMA_MODELS=/mnt/cache/ollama          <span class="c"># Ollama models (Linux)</span>
+export HF_HOME=/mnt/cache/huggingface           <span class="c"># Hugging Face (Linux)</span>
+npm config set cache /mnt/cache/npm             <span class="c"># npm</span>
+<span class="c"># Docker/BuildKit: --cache-to/--cache-from type=local on /mnt/cache/docker</span></pre>
+
+  <h2>Documentation</h2>
+  <ul class="docs">
+    <li><span class="t">README.md</span> — <span class="d">configure the server, install per platform, requirements (Linux needs <code>nfs-common</code>).</span></li>
+    <li><span class="t">docs/docker-cache.md</span> — <span class="d">shared BuildKit cache vs. an optional registry pull-through proxy for true layer caching.</span></li>
+    <li><span class="t">docs/ollama-cache.md</span> — <span class="d">shared Ollama model storage (<code>OLLAMA_MODELS</code>) and Hugging Face (<code>HF_HOME</code>).</span></li>
+    <li><span class="t">docs/ops.md</span> — <span class="d">NFS server ops, Tailscale connectivity checks, and troubleshooting common mount errors.</span></li>
+  </ul>
+
+  <footer>
+    Companion Intelligence · Tools Cache Mount ·
+    <code>ghcr.io/companionintelligence/ci-tools-cache-mounts</code>
+  </footer>
+</div>
+</body>
+</html>

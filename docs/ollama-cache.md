@@ -51,5 +51,6 @@ This keeps downloaded models and datasets shared across machines.
 ---
 
 ## Notes
-- NFS permissions are configured to map clients to uid/gid 1000 (ci user)
-- If you want per-user permissions, we can switch to NFSv4 with proper uid mapping
+- A common export setup maps all clients to a single uid/gid (e.g. `all_squash,anonuid=1000,anongid=1000`)
+  so every machine reads and writes the shared model files as the same owner
+- If you want per-user permissions, switch to NFSv4 with proper uid mapping

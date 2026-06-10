@@ -27,8 +27,9 @@ Make sure your configured `CACHE_SERVER` is reachable on your VPN/LAN.
 
 ---
 
-## OpenClaw on the cache server
-OpenClaw is installed and running with tailnet bind.
+## OpenClaw on the cache server (optional)
+If your cache server also runs an OpenClaw gateway with tailnet bind, you can manage it
+alongside the NFS exports. Skip this section if OpenClaw is not part of your deployment.
 
 Check status:
 ```bash
@@ -38,7 +39,7 @@ openclaw gateway status
 If you need to connect remotely:
 ```bash
 export OPENCLAW_GATEWAY_URL=ws://CACHE_SERVER:18789
-export OPENCLAW_GATEWAY_TOKEN=... # stored at /home/ci/openclaw_gateway_token.txt
+export OPENCLAW_GATEWAY_TOKEN=... # the gateway token stored on the cache server
 openclaw status
 ```
 
@@ -63,5 +64,5 @@ openclaw status
 ---
 
 ## Security notes
-- NFS is restricted to Tailscale’s CGNAT range only
-- If you want per-device controls, we can restrict exports to specific IPs
+- Restrict NFS exports to your VPN range (for Tailscale, the CGNAT range `100.64.0.0/10`)
+- For per-device controls, restrict exports to specific client IPs in `/etc/exports`

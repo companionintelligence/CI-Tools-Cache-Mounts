@@ -40,14 +40,16 @@ cache_require_server() {
 
 cache_export_path() {
   local name="$1"
-  local suffix="CACHE_EXPORT_$(cache_var_suffix "$name")"
+  local suffix
+  suffix="CACHE_EXPORT_$(cache_var_suffix "$name")"
   echo "${!suffix:-$CACHE_EXPORT_BASE/$name}"
 }
 
 cache_mount_path() {
   local platform="$1"
   local name="$2"
-  local suffix="CACHE_MOUNT_$(cache_var_suffix "$name")"
+  local suffix
+  suffix="CACHE_MOUNT_$(cache_var_suffix "$name")"
 
   if [[ -n "${!suffix:-}" ]]; then
     echo "${!suffix}"
@@ -71,4 +73,12 @@ cache_mount_path() {
 cache_remote_spec() {
   local name="$1"
   echo "${CACHE_SERVER}:$(cache_export_path "$name")"
+}
+
+# True if something is already mounted at the given path. Anchors the match on
+# the " on <path> " portion of `mount` output so /mnt/cache/foo does not match
+# /mnt/cache/foo-bar (works for both Linux and macOS mount formats).
+cache_is_mounted() {
+  local mount_path="$1"
+  mount | grep -Fq " on ${mount_path} "
 }
