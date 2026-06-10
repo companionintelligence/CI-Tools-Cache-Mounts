@@ -2,6 +2,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=scripts/cache_mounts.sh
 source "$REPO_DIR/scripts/cache_mounts.sh"
 
 cache_require_server
@@ -33,13 +34,18 @@ while IFS= read -r cache_name; do
       awk -v mount="$mount_path" '$2 != mount { print }' /etc/fstab | sudo tee "$tmp_fstab" >/dev/null
     fi
     printf '%s\n' "$fstab_line" | sudo tee -a "$tmp_fstab" >/dev/null
-    sudo tee /etc/fstab < "$tmp_fstab" >/dev/null
+    # tmp_fstab is root-owned 600; an unprivileged redirect (`< file`) cannot
+    # read it, so install it into place with root privileges instead (SC2024).
+    sudo install -m 644 "$tmp_fstab" /etc/fstab
     sudo rm -f "$tmp_fstab"
   fi
 done < <(cache_list_names)
 
 # Try mounting now
-sudo mount -a
+if ! sudo mount -a; then
+  echo "mount -a failed; check that $CACHE_SERVER is reachable and exporting the cache paths." >&2
+  exit 1
+fi
 
 chmod +x "$REPO_DIR/scripts/linux_mount.sh" "$REPO_DIR/scripts/linux_unmount.sh"
 

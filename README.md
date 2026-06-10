@@ -36,6 +36,10 @@ Out of the box, the example config covers:
 ./scripts/macos_install.sh
 ```
 
+> The launchd job re-runs `macos_mount.sh` every 5 minutes as your user. Because the
+> mount script calls `sudo`, unattended re-mounts only work if your user has
+> passwordless sudo for `mount`/`mkdir`; otherwise use the manual mount commands.
+
 ### Manual mount
 ```bash
 ./scripts/macos_mount.sh
@@ -47,7 +51,7 @@ Out of the box, the example config covers:
 ```
 
 ## Linux
-### One-time install (adds to /etc/fstab + systemd automount)
+### One-time install (adds /etc/fstab entries with `_netdev` and mounts now)
 ```bash
 ./scripts/linux_install.sh
 ```
@@ -66,5 +70,15 @@ Out of the box, the example config covers:
 - Requires NFS client packages:
   - macOS: built-in
   - Ubuntu/Debian: `sudo apt-get install -y nfs-common`
-- All scripts read `./cache-mounts.conf` if present, or you can export the same variables in your shell.
+- All scripts read `cache-mounts.conf` from the repo root if present (regardless of the
+  directory you run them from). Set `CACHE_MOUNTS_CONFIG=/path/to/conf` to use a different
+  file, or export the same variables in your shell.
 - Linux install writes the resolved server/export paths into `/etc/fstab`; rerun it after changing the config.
+
+## Hub container (status page)
+
+The CI Hub marketplace app `ci-tools-cache-mounts` runs
+`ghcr.io/companionintelligence/ci-tools-cache-mounts` (built from the `Dockerfile` in this
+repo). It serves only the static status/reference page in `status/` — the actual NFS
+mounts are configured host-side with the scripts above; a container cannot create host
+mounts. Treat the container as an install confirmation plus quick-reference card.
