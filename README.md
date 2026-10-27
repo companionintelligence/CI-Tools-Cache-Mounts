@@ -2,8 +2,37 @@
 
 <p align="center"><strong>Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.</strong></p>
 
-<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a> · <a href="https://docs.ci.computer/docs/reference/open-source-systems">Systems map</a></p>
+[![release](https://img.shields.io/badge/release-not%20published-757575?style=flat-square)](https://github.com/companionintelligence/CI-Tools-Cache-Mounts/releases)
+[![platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Linux-0a6358?style=flat-square)](https://github.com/companionintelligence/CI-Tools-Cache-Mounts)
+[![License](https://img.shields.io/badge/license-Commercial%20Standard-8a5a00?style=flat-square)](LICENSE.md)
+[![Discord](https://img.shields.io/badge/chat-Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/invite/yQp9hwpzAa)
 
+<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a> · <a href="https://docs.ci.computer/docs/reference/open-source-systems">Systems map</a> · <a href="docs/README.md">Documentation</a></p>
+
+<p align="center">
+  <a href="#configure-the-cache-server"><img src="https://img.shields.io/badge/Configure%20mounts-Configure%20mounts-0a6358?style=for-the-badge&logo=linux&logoColor=white" alt="Configure mounts" height="30"></a>
+</p>
+
+
+## How it fits together
+
+The host mounts shared NFS cache directories and exposes them to local tools; the cache server remains a separate trusted machine.
+
+```mermaid
+flowchart LR
+  NFS[Trusted NFS server] --> Host[macOS or Linux host mounts]
+  Host --> Apps[Docker, Ollama and package tools]
+  Hub[Optional Hub status view] -. reads configuration .-> Host
+```
+
+
+## Features
+
+| Feature | What it provides |
+|---|---|
+| **Shared cache mounts** | Expose Docker, Ollama, npm and Hugging Face caches over trusted NFS. |
+| **Host integration** | Use launchd on macOS or fstab/systemd mount paths on Linux. |
+| **Hub visibility** | Provide configuration that Hub can display while the host performs mounts. |
 
 ## Configure the cache server
 Create a local config file before running the scripts:
