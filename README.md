@@ -1,6 +1,9 @@
-# Cache Mounts (NFS over VPN or LAN)
+<h1 align="center">Cache Mounts (NFS over VPN or LAN)</h1>
 
-Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.
+<p align="center"><strong>Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.</strong></p>
+
+<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a> · <a href="https://docs.ci.computer/docs/reference/open-source-systems">Systems map</a></p>
+
 
 ## Configure the cache server
 Create a local config file before running the scripts:
@@ -82,3 +85,26 @@ The CI Hub marketplace app `ci-tools-cache-mounts` runs
 repo). It serves only the static status/reference page in `status/` — the actual NFS
 mounts are configured host-side with the scripts above; a container cannot create host
 mounts. Treat the container as an install confirmation plus quick-reference card.
+
+<!-- companion-hub-readme-deep-review -->
+
+## Configuration reference
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CACHE_SERVER` | Set in `cache-mounts.conf` | Hostname/IP for the NFS server |
+| `CACHE_NAMES` | `docker ollama npm huggingface` | Shares to mount |
+| `CACHE_EXPORT_BASE` | `/srv/cache` | Server-side export root |
+| macOS mount | `/Volumes/cache-<name>` | Client mount path |
+| Linux mount | `/mnt/cache/<name>` | Client mount path |
+
+```mermaid
+flowchart LR
+  Clients[macOS and Linux clients] --> VPN[Trusted LAN or Tailscale]
+  VPN --> NFS[NFS cache server]
+  NFS --> Shares[docker / ollama / npm / huggingface]
+  Shares --> Tools[Docker, Ollama, npm, Hugging Face]
+```
+
+NFS exports should be restricted to the trusted VPN range or explicit client IPs. macOS unattended mounts need the documented mount permissions; Linux uses `_netdev` entries and requires an NFS client package. The Hub status app is informational—the mount operation runs on the host. See [operations and troubleshooting](docs/ops.md).
+
