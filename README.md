@@ -1,6 +1,9 @@
-# Cache Mounts (NFS over VPN or LAN)
+<h1 align="center">Cache Mounts (NFS over VPN or LAN)</h1>
 
-Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.
+<p align="center"><strong>Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.</strong></p>
+
+<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a></p>
+
 
 ## Configure the cache server
 Create a local config file before running the scripts:
