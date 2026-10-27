@@ -2,7 +2,7 @@
 
 <p align="center"><strong>Automates mounting shared NFS cache exports across macOS and Linux clients over Tailscale, VPN, or LAN.</strong></p>
 
-<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a></p>
+<p align="center"><a href="https://github.com/companionintelligence/CI-Tools-Cache-Mounts">Source</a> · <a href="https://docs.ci.computer/docs/reference/open-source-systems">Systems map</a></p>
 
 
 ## Configure the cache server
